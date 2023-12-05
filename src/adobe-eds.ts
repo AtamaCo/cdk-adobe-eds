@@ -3,7 +3,7 @@ import { EDSDistributionProps, EDSDistribution } from './eds-distribution';
 import { EDSInvalidation } from './eds-invalidation';
 
 /**
- * All configuration options for the Adobe EDS CDN deployment.
+ * All configuration options for the Adobe Edge Delivery Services CDN deployment.
  */
 export interface AdobeEDSConstructProps {
   /**
@@ -25,7 +25,7 @@ export interface AdobeEDSConstructProps {
 }
 
 /**
- * Infrastructure for Adobe Edge Delivery Service.
+ * CDN infrastructure for Adobe Edge Delivery Services.
  */
 export class AdobeEDS extends Construct {
   edsDistribution: EDSDistribution;

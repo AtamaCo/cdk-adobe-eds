@@ -1,8 +1,8 @@
-# Adobe / AEM Edge Delivery Service (EDS) Construct
+# Adobe / AEM Edge Delivery Services Construct
 
 ## What is this?
 
-CDK Construct should provide a starting point for deploying a CDN in front of Edge Side Delivery (Franklin, Helix, AEM) with AWS CloudFront. After deploying the `AdobeEDS` Construct in your stack you should be able to access EDS through the Distribution's default CloudFront domain.
+CDK Construct should provide a starting point for deploying a CDN in front of Edge Delivery Services (Franklin, Helix, AEM) with AWS CloudFront. After deploying the `AdobeEDS` Construct in your stack you should be able to access Edge Delivery Services through the Distribution's default CloudFront domain.
 
 **[The configuration in this project is based on these recommendations in Adobe's BYO CDN documentation](https://www.aem.live/docs/byo-cdn-cloudfront-setup)**. _Note that via configuration you can match the Adobe recomendation configuration but the default configuration slightly deviates as noted below_.
 
@@ -17,12 +17,12 @@ npm install --save-dev cdk-adobe-eds
 
 ## Usage
 
-This basic example will result in a CloudFront Distribution being made with the default origin being backed by EDS.
+This basic example will result in a CloudFront Distribution being made with the default origin being backed by Edge Delivery Services.
 
 ```
 // my-adobe-eds-stack.ts
 
-// Create CDN for EDS on CloudFront
+// Create CDN for Edge Delivery Services on CloudFront
 new AdobeEDS(this, `sandbox-adobe-eds`, {
   // A friendly prefix for quickly glancing resources in your environment
   prefix: "sandbox",
@@ -30,9 +30,9 @@ new AdobeEDS(this, `sandbox-adobe-eds`, {
   invalidateAllOnDeploy: true,
   distributionConfig: {
     prefix: "sandbox",
-    // The EDS URL you'd like to use for the default origin
+    // The Edge Delivery Services URL you'd like to use for the default origin
     edsURL: "https://<branch>--<repo>--<account>.hlx.live",
-    // We won't send the push invalidation header to EDS.
+    // We won't send the push invalidation header to Edge Delivery Services.
     // Note this means we'll have to wait for the cache policy TTL to expire
     sendPushInvalidationHeader: false,
     // ...
@@ -48,17 +48,17 @@ There are a number of known deviations that can result in deployed infrastructur
 
 ### X-Forwarded-Host not set by default
 
-If you do not specify a domain in the `domain` property for the `EDSDistributionConstruct` the `X-Forwarded-Host` header is NOT sent. Note that in some testing it seems that EDS is smart enough to automatically swap out base domains for the CDN value even if this is not sent, but still this is a deviation. For those simply testing AWS with this set of Constructs (I suspect many may use this as a place to do some basic testing or may borrow from but not use as-is) the issue may be you want to test with the CloudFront domain, e.g. `dsomethingsomethingj.cloudfront.net` and in that case I'm not aware of a way to get the CloudFront domain name set on the default origin.
+If you do not specify a domain in the `domain` property for the `EDSDistributionConstruct` the `X-Forwarded-Host` header is NOT sent. Note that in some testing it seems that Edge Delivery Services is smart enough to automatically swap out base domains for the CDN value even if this is not sent, but still this is a deviation. For those simply testing AWS with this set of Constructs (I suspect many may use this as a place to do some basic testing or may borrow from but not use as-is) the issue may be you want to test with the CloudFront domain, e.g. `dsomethingsomethingj.cloudfront.net` and in that case I'm not aware of a way to get the CloudFront domain name set on the default origin.
 
 **[It may be possible to do this as the Distribution does expose `distributionDomainName`](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_cloudfront.IDistribution.html#distributiondomainname)**, and I certainly welcome any improvements here. 
 
 ### Origin Shield not enabled by default
 
-Adobe specifies Origin Shield should be enabled. If you do not enable origin shield it would seem the CDN works well enough but in theory both performance and your relationship with Adobe may suffer as this could result in more requests to the EDS origin in a less optimial way. Because [Origin Shield adds additional cost beyond the free-tier (to the best of my understanding)](https://aws.amazon.com/cloudfront/pricing/) I prefer to disable it by default to avoid surprises to an individual who simply wants to experiement with AWS and Adobe EDS.
+Adobe specifies Origin Shield should be enabled. If you do not enable origin shield it would seem the CDN works well enough but in theory both performance and your relationship with Adobe may suffer as this could result in more requests to the Edge Delivery Services origin in a less optimial way. Because [Origin Shield adds additional cost beyond the free-tier (to the best of my understanding)](https://aws.amazon.com/cloudfront/pricing/) I prefer to disable it by default to avoid surprises to an individual who simply wants to experiement with AWS and Adobe Edge Delivery Services.
 
 ### TLS Version not pegged at TLSv1
 
-In the instructions under "[Configure the Origin](https://www.aem.live/docs/byo-cdn-cloudfront-setup#configure-the-origin)", although not highlighted as a mandatory setting the minimum TLS version selected by Adobe is TLSv1. The default is TLSv1.2 if not specified in CF and Fastly / Adobe EDS seems to handle this just fine. I would be surprised if this was an issue, but it's a black box to me so I wanted to call it out.
+In the instructions under "[Configure the Origin](https://www.aem.live/docs/byo-cdn-cloudfront-setup#configure-the-origin)", although not highlighted as a mandatory setting the minimum TLS version selected by Adobe is TLSv1. The default is TLSv1.2 if not specified in CF and Fastly / Adobe Edge Delivery Services seems to handle this just fine. I would be surprised if this was an issue, but it's a black box to me so I wanted to call it out.
 
 
 ## Note on Free Tier

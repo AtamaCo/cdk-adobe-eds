@@ -4,7 +4,7 @@
 
 ### AdobeEDS <a name="AdobeEDS" id="cdk-adobe-eds.AdobeEDS"></a>
 
-Infrastructure for Adobe Edge Delivery Service.
+CDN infrastructure for Adobe Edge Delivery Services.
 
 #### Initializers <a name="Initializers" id="cdk-adobe-eds.AdobeEDS.Initializer"></a>
 
@@ -116,7 +116,7 @@ public readonly edsDistribution: EDSDistribution;
 
 ### EDSDistribution <a name="EDSDistribution" id="cdk-adobe-eds.EDSDistribution"></a>
 
-A high level Construct for creating infrastructure required to support Adobe AEM Edge Delivery Service.
+A high level Construct for creating infrastructure required to support Adobe AEM Edge Delivery Services.
 
 This stands for
 "Edge Delivery Service Content Delivery Construct."
@@ -268,7 +268,7 @@ public readonly distribution: Distribution;
 
 ### AdobeEDSConstructProps <a name="AdobeEDSConstructProps" id="cdk-adobe-eds.AdobeEDSConstructProps"></a>
 
-All configuration options for the Adobe EDS CDN deployment.
+All configuration options for the Adobe Edge Delivery Services CDN deployment.
 
 #### Initializer <a name="Initializer" id="cdk-adobe-eds.AdobeEDSConstructProps.Initializer"></a>
 
@@ -349,18 +349,18 @@ const eDSDistributionProps: EDSDistributionProps = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.edsURL">edsURL</a></code> | <code>string</code> | The URL for the Adobe EDS site deployment. |
+| <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.edsURL">edsURL</a></code> | <code>string</code> | The URL for the Adobe Edge Delivery Services site deployment. |
 | <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.prefix">prefix</a></code> | <code>string</code> | The environment prefix. |
 | <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.sendPushInvalidationHeader">sendPushInvalidationHeader</a></code> | <code>boolean</code> | Push invalidation can be enabled for CloudFront using a very aggressive wildcard, i.e. `/*`. If you've setup this up OR IF YOU PLAN TO SET THIS UP, setting this value to true will append the required headers as specified in the docs by Adobe. Note that this property will NOT automatically setup the invalidator IAM roles / policies, at this point that will need to be manual. Ideally this would be something handled using OpenID Connect if possible. |
 | <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.additionalBehaviors">additionalBehaviors</a></code> | <code>{[ key: string ]: aws-cdk-lib.aws_cloudfront.BehaviorOptions}</code> | If you'd like other behviors including in the CloudFront Distribution they can be added here. |
 | <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.certificate">certificate</a></code> | <code>aws-cdk-lib.aws_certificatemanager.ICertificate</code> | If you'd like to associate a certificate with this Distribution it can be provided here. |
-| <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.cloudFrontEDSFunction">cloudFrontEDSFunction</a></code> | <code>aws-cdk-lib.aws_cloudfront.Function</code> | If you prefer to supply your own EDS Origin CF Function you can, but beware that Adobe requires certain actions be performed by this function, e.g. removing the `age` header. If you override this Function you should be sure that it is handling any behavior required by EDS downstream. |
+| <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.cloudFrontEDSFunction">cloudFrontEDSFunction</a></code> | <code>aws-cdk-lib.aws_cloudfront.Function</code> | If you prefer to supply your own Edge Delivery Services Origin CF Function you can, but beware that Adobe requires certain actions be performed by this function, e.g. removing the `age` header. If you override this Function you should be sure that it is handling any behavior required by Edge Delivery Services downstream. |
 | <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.defaultBehaviorEdgeLambdas">defaultBehaviorEdgeLambdas</a></code> | <code>aws-cdk-lib.aws_cloudfront.EdgeLambda[]</code> | Any Lambda@Edge configurations you'd like to supply with the default origin. |
-| <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.domain">domain</a></code> | <code>string</code> | The domain (e.g. www.amazingwebsite.com) for the final website. This is past to EDS for handling URL mappings and such as the X-Forwarded-Host header. If not specified, this header is NOT sent. |
+| <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.domain">domain</a></code> | <code>string</code> | The domain (e.g. www.amazingwebsite.com) for the final website. This is past to Edge Delivery Services for handling URL mappings and such as the X-Forwarded-Host header. If not specified, this header is NOT sent. |
 | <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.domainNames">domainNames</a></code> | <code>string[]</code> | A list of domain names that should be associated with the Distribution. |
 | <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.enableLogging">enableLogging</a></code> | <code>boolean</code> | Enable logging for the distribution? If set to true a bucket will be created for logs. |
 | <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.enableOriginShield">enableOriginShield</a></code> | <code>boolean</code> | Origin Shield is recommended by Adobe but there are extra costs associated with it so is set to false by default to avoid unexpected costs. |
-| <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.originShieldRegion">originShieldRegion</a></code> | <code>string</code> | The region config for the default EDS region. |
+| <code><a href="#cdk-adobe-eds.EDSDistributionProps.property.originShieldRegion">originShieldRegion</a></code> | <code>string</code> | The region config for the default Edge Delivery Services region. |
 
 ---
 
@@ -372,7 +372,7 @@ public readonly edsURL: string;
 
 - *Type:* string
 
-The URL for the Adobe EDS site deployment.
+The URL for the Adobe Edge Delivery Services site deployment.
 
 This most likely will have a format similar to
 <main>--<project>--<github user>.hlx.live - note it is without the https:// and no trailing slash.
@@ -447,7 +447,7 @@ public readonly cloudFrontEDSFunction: Function;
 
 - *Type:* aws-cdk-lib.aws_cloudfront.Function
 
-If you prefer to supply your own EDS Origin CF Function you can, but beware that Adobe requires certain actions be performed by this function, e.g. removing the `age` header. If you override this Function you should be sure that it is handling any behavior required by EDS downstream.
+If you prefer to supply your own Edge Delivery Services Origin CF Function you can, but beware that Adobe requires certain actions be performed by this function, e.g. removing the `age` header. If you override this Function you should be sure that it is handling any behavior required by Edge Delivery Services downstream.
 
 ---
 
@@ -474,7 +474,7 @@ public readonly domain: string;
 
 - *Type:* string
 
-The domain (e.g. www.amazingwebsite.com) for the final website. This is past to EDS for handling URL mappings and such as the X-Forwarded-Host header. If not specified, this header is NOT sent.
+The domain (e.g. www.amazingwebsite.com) for the final website. This is past to Edge Delivery Services for handling URL mappings and such as the X-Forwarded-Host header. If not specified, this header is NOT sent.
 
 ---
 
@@ -530,7 +530,7 @@ public readonly originShieldRegion: string;
 
 - *Type:* string
 
-The region config for the default EDS region.
+The region config for the default Edge Delivery Services region.
 
 This propertly is only used if Origin Shield is enabled.
 Note no enum is provided here because there is no enum, so take care!

@@ -31,14 +31,16 @@ export interface EDSInvalidationProps {
 
 /**
  * Invalidation for deployments. The idea here is to provide an easy way to invalidate all
- * caches when you modify the EDS CDN configuration.
+ * caches when you modify the Edge Delivery Services CDN configuration.
  */
 export class EDSInvalidation extends Construct {
   constructor(scope: Construct, id: string, props: EDSInvalidationProps) {
     super(scope, id);
     const awsSdkCall: AwsSdkCall = {
       // this needs to be updated on each deploy to make sure a new invalidation resource is created
-      physicalResourceId: PhysicalResourceId.of(`${props.distribution.distributionId}-${Date.now()}`),
+      physicalResourceId: PhysicalResourceId.of(
+        `${props.distribution.distributionId}-${Date.now()}`,
+      ),
       action: 'CreateInvalidationCommand',
       service: '@aws-sdk/client-cloudfront',
       parameters: {
@@ -52,22 +54,26 @@ export class EDSInvalidation extends Construct {
         },
       },
     };
-    const awsCustomResource = new AwsCustomResource(this, 'InvalidationCustomResource', {
-      onCreate: awsSdkCall,
-      onUpdate: awsSdkCall,
-      policy: AwsCustomResourcePolicy.fromStatements([
-        new PolicyStatement({
-          actions: ['cloudfront:CreateInvalidation'],
-          resources: [
-            Stack.of(this).formatArn({
-              resource: `distribution/${props.distribution.distributionId}`,
-              service: 'cloudfront',
-              region: '',
-            }),
-          ],
-        }),
-      ]),
-    });
+    const awsCustomResource = new AwsCustomResource(
+      this,
+      'InvalidationCustomResource',
+      {
+        onCreate: awsSdkCall,
+        onUpdate: awsSdkCall,
+        policy: AwsCustomResourcePolicy.fromStatements([
+          new PolicyStatement({
+            actions: ['cloudfront:CreateInvalidation'],
+            resources: [
+              Stack.of(this).formatArn({
+                resource: `distribution/${props.distribution.distributionId}`,
+                service: 'cloudfront',
+                region: '',
+              }),
+            ],
+          }),
+        ]),
+      },
+    );
     for (const dependency of props.dependencies || []) {
       dependency.node.addDependency(awsCustomResource);
     }
