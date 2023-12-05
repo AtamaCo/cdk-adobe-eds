@@ -15,6 +15,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   // deps: [],                /* Runtime dependencies of this module. */
   devDeps: ['cdk-nag'] /* Build dependencies for this module. */,
   keywords: [
+    'awscdk',
     'AWS',
     'CDK',
     'CDN',

@@ -72,6 +72,7 @@
     "EDS",
     "Franklin",
     "Helix",
+    "awscdk",
     "cdk"
   ],
   "main": "lib/index.js",
