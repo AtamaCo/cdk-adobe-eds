@@ -40,20 +40,20 @@ export interface EDSDistributionProps {
    */
   readonly prefix: string;
   /**
-   * The URL for the Adobe EDS site deployment. This most likely will have a format similar to
+   * The URL for the Adobe Edge Delivery Services site deployment. This most likely will have a format similar to
    * <main>--<project>--<github user>.hlx.live - note it is without the https:// and no trailing slash.
    * Also note that most likely this should be the `.live` version of the domain, not `.page` (preview).
    */
   readonly edsURL: string;
   /**
-   * The domain (e.g. www.amazingwebsite.com) for the final website. This is past to EDS for handling
+   * The domain (e.g. www.amazingwebsite.com) for the final website. This is past to Edge Delivery Services for handling
    * URL mappings and such as the X-Forwarded-Host header. If not specified, this header is NOT sent.
    */
   readonly domain?: string;
   /**
-   * If you prefer to supply your own EDS Origin CF Function you can, but beware that Adobe requires
+   * If you prefer to supply your own Edge Delivery Services Origin CF Function you can, but beware that Adobe requires
    * certain actions be performed by this function, e.g. removing the `age` header. If you override
-   * this Function you should be sure that it is handling any behavior required by EDS downstream.
+   * this Function you should be sure that it is handling any behavior required by Edge Delivery Services downstream.
    */
   readonly cloudFrontEDSFunction?: Function;
   /**
@@ -72,7 +72,7 @@ export interface EDSDistributionProps {
    */
   readonly enableOriginShield?: boolean;
   /**
-   * The region config for the default EDS region. This propertly is only used if Origin Shield is enabled.
+   * The region config for the default Edge Delivery Services region. This propertly is only used if Origin Shield is enabled.
    * Note no enum is provided here because there is no enum, so take care!
    * @see {@link https://github.com/aws/aws-sdk-java-v2/issues/3345}.
    */
@@ -107,7 +107,7 @@ export interface EDSDistributionProps {
 }
 
 /**
- * A high level Construct for creating infrastructure required to support Adobe AEM Edge Delivery Service. This stands for
+ * A high level Construct for creating infrastructure required to support Adobe AEM Edge Delivery Services. This stands for
  * "Edge Delivery Service Content Delivery Construct."
  * @see {@link https://www.aem.live/docs/byo-cdn-cloudfront-setup#configure-the-origin}
  */
@@ -116,9 +116,9 @@ export class EDSDistribution extends Construct {
 
   // Header for forwarding domain name downstream
   readonly xForwardedHostHeaderName = 'X-Forwarded-Host';
-  // Adobe EDS specific header for letting EDS know which cloud provider is acting as the CDN
+  // Adobe Edge Delivery Services specific header for letting know which cloud provider is acting as the CDN
   readonly xBYOHeaderName = 'X-BYO-CDN-Type';
-  // The Adobe EDS value expected for AWS CloudFront
+  // The Adobe Edge Delivery Services value expected for AWS CloudFront
   readonly xBYOHeaderValue = 'cloudfront';
 
   constructor(scope: Construct, id: string, props: EDSDistributionProps) {
@@ -163,7 +163,10 @@ export class EDSDistribution extends Construct {
             ...originShieldOriginOptions,
             protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
             // Note that the Adobe doc screenshots actually show TLS_V1, but don't specify it as required
-            originSslProtocols: [OriginSslPolicy.TLS_V1_1, OriginSslPolicy.TLS_V1_2],
+            originSslProtocols: [
+              OriginSslPolicy.TLS_V1_1,
+              OriginSslPolicy.TLS_V1_2,
+            ],
             customHeaders: {
               ...domainHeader,
               [this.xBYOHeaderName]: this.xBYOHeaderValue,
@@ -196,7 +199,7 @@ export class EDSDistribution extends Construct {
   }
 
   /**
-   * Creates a new {@link CachePolicy} matching the details provided by the Adobe EDS documentation.
+   * Creates a new {@link CachePolicy} matching the details provided by the Adobe Edge Delivery Services documentation.
    *
    * @param props cache policy configuration flags and options
    * @returns a {@link CachePolicy}
@@ -212,7 +215,8 @@ export class EDSDistribution extends Construct {
       cookieBehavior: CacheCookieBehavior.none(),
       enableAcceptEncodingGzip: true,
       enableAcceptEncodingBrotli: true,
-      comment: 'Adobe EDS CachePolicy for Edge Delivery Service',
+      comment:
+        'Adobe Edge Delivery Services CachePolicy for Edge Delivery Service',
     });
   }
 
@@ -249,7 +253,7 @@ export class EDSDistribution extends Construct {
   private createDefaultOriginFunction(props: { prefix: string }): IFunction {
     return new Function(this, `${props.prefix}-eds-default-origin-function`, {
       functionName: `${props.prefix}-eds-default-origin-function`,
-      comment: 'EDS CDN CF Function for removing age header',
+      comment: 'Edge Delivery Services CDN CF Function for removing age header',
       code: FunctionCode.fromInline(`
         function handler(event) {
           // remove Age header
